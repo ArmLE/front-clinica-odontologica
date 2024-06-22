@@ -25,11 +25,28 @@ export function App () {
   const handleEdit = (id) => {
     //
   }
-  const handleCreate = () => {
+  const handleCreate = (e) => {
+    e.preventDefault()
+    const newOdontologo = {
+      nroMatricula: document.getElementById('matricula').value,
+      nombre: document.getElementById('nombre').value,
+      apellido: document.getElementById('apellido').value
+    }
+    fetch('http://localhost:8080/odontologo', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(newOdontologo)
+    }).then(res => res.json())
+      .then(data => {
+        setOdontologo([...odontologo, data])
+        setCreateOdo(null)
+      })
+  }
+  const availableInput = (e) => {
     switch (createOdo) {
       case null: setCreateOdo(true)
         break
-      case true: setCreateOdo(null)
+      case true: handleCreate(e)
         break
     }
   }
@@ -53,7 +70,7 @@ export function App () {
           </section>
         )
       }
-      <button onClick={handleCreate}> {createOdo ? 'Guardar ' : 'Crear '} Odontologo</button>
+      <button onClick={availableInput}> {createOdo ? 'Guardar ' : 'Crear '} Odontologo</button>
       {
         odontologo.map(
           ({ id, nroMatricula, nombre, apellido }) => (
