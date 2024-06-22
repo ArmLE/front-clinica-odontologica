@@ -11,7 +11,11 @@ export function App () {
   }, [])
 
   console.log(odontologo)
-
+  const fetchOdontologos = () => {
+    fetch('http://localhost:8080/odontologo')
+      .then(res => res.json())
+      .then(data => setOdontologo(data))
+  }
   const handleDelete = (id) => {
     fetch(`http://localhost:8080/odontologo/${id}`, {
       method: 'DELETE'
@@ -23,7 +27,21 @@ export function App () {
       })
   }
   const handleEdit = (id) => {
-    //
+    const changeOdontologo = {
+      id: Number(id),
+      nroMatricula: document.getElementById(`${id}-matricula`).value,
+      nombre: document.getElementById(`${id}-nombre`).value,
+      apellido: document.getElementById(`${id}-apellido`).value
+    }
+    fetch('http://localhost:8080/odontologo', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(changeOdontologo)
+    }).then(res => {
+      if (res.ok) {
+        fetchOdontologos()
+      }
+    })
   }
   const handleCreate = (e) => {
     e.preventDefault()
